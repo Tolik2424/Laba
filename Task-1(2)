@@ -1,0 +1,83 @@
+#include "FixedCapacityStack.h"
+
+template <typename T, int MaxSize>
+FixedCapacityStack<T, MaxSize>::FixedCapacityStack() {
+    data = new T[MaxSize];
+    top = -1;
+}
+
+template <typename T, int MaxSize>
+FixedCapacityStack<T, MaxSize>::~FixedCapacityStack() {
+    delete[] data;
+}
+
+template <typename T, int MaxSize>
+void FixedCapacityStack<T, MaxSize>::push(const T& item) {
+    if (isFull()) {
+        throw std::overflow_error("Stack is full");
+    }
+    data[++top] = item;
+}
+
+template <typename T, int MaxSize>
+T FixedCapacityStack<T, MaxSize>::pop() {
+    if (isEmpty()) {
+        throw std::underflow_error("Stack is empty");
+    }
+    return data[top--];
+}
+
+template <typename T, int MaxSize>
+T FixedCapacityStack<T, MaxSize>::peek() const {
+    if (isEmpty()) {
+        throw std::underflow_error("Stack is empty");
+    }
+    return data[top];
+}
+
+template <typename T, int MaxSize>
+bool FixedCapacityStack<T, MaxSize>::isEmpty() const {
+    return top == -1;
+}
+
+template <typename T, int MaxSize>
+bool FixedCapacityStack<T, MaxSize>::isFull() const {
+    return top == MaxSize - 1;
+}
+
+int main() {
+    FixedCapacityStack<int, 5> intStack;
+
+    for (int i = 1; i <= 5; ++i) {
+        intStack.push(i);
+    }
+
+    std::cout << "Integer Stack: " << intStack << std::endl;
+
+    try {
+        intStack.push(6); // Попытка добавить элемент в полный стек
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    while (!intStack.isEmpty()) {
+        intStack.pop();
+    }
+
+    std::cout << "Integer Stack after clearing: " << intStack << std::endl;
+
+    FixedCapacityStack<double, 3> doubleStack;
+
+    try {
+        doubleStack.push(1.1);
+        doubleStack.push(2.2);
+        doubleStack.push(3.3);
+        doubleStack.push(4.4); // Попытка добавить элемент в полный стек
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    std::cout << "Double Stack: " << doubleStack << std::endl;
+
+    return 0;
+}
